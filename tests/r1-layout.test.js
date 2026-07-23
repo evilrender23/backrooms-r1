@@ -46,8 +46,8 @@ test('el fundido queda limitado al lienzo r1 y no al navegador de escritorio', (
 });
 
 test('los recursos r1 corregidos invalidan la caché del entorno de pruebas', () => {
-  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 5);
-  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 5);
+  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 7);
+  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 6);
 });
 
 test('las pantallas controladas por display inline pueden permanecer ocultas', () => {
@@ -124,4 +124,23 @@ test('el preview de escritorio centra y escala el lienzo sin cambiar el Rabbit',
   assert.match(css, /html\.r1-desktop-preview,\s*body\.r1-desktop-preview\s*\{[\s\S]*?width:\s*100vw\s*!important/);
   assert.match(css, /body\.r1-desktop-preview\s*\{[\s\S]*?align-items:\s*center\s*!important;[\s\S]*?justify-content:\s*center\s*!important/);
   assert.match(css, /body\.r1-desktop-preview\s*>\s*#app\s*\{[\s\S]*?transform:\s*scale\(var\(--r1-preview-scale\)\)/);
+});
+
+test('el adaptador redimensiona WebGL mediante Render3D y no corrompe su drawing buffer', () => {
+  assert.doesNotMatch(adapter, /glc\.width\s*=\s*240/);
+  assert.doesNotMatch(adapter, /glc\.height\s*=\s*282/);
+  assert.match(adapter, /Render3D\.resize\(240, 282\)/);
+  assert.match(adapter, /gc\.width\s*=\s*240;\s*gc\.height\s*=\s*282/);
+});
+
+test('el canvas WebGL queda debajo de un overlay 2D transparente y no interactivo', () => {
+  assert.match(css, /#game-wrap\.modo3d\s*>\s*#gl-canvas\s*\{[\s\S]*?z-index:\s*1\s*!important/);
+  assert.match(css, /#game-wrap\.modo3d\s*>\s*#game-canvas\s*\{[\s\S]*?position:\s*absolute\s*!important;[\s\S]*?z-index:\s*2\s*!important;[\s\S]*?background:\s*transparent\s*!important;[\s\S]*?pointer-events:\s*none\s*!important/);
+});
+
+test('los placeholders de equipo no desbordan texto recortado sobre la cámara', () => {
+  assert.match(css, /\.eq-ph\s*\{[\s\S]*?font-size:\s*0\s*!important;[\s\S]*?overflow:\s*hidden\s*!important/);
+  assert.match(css, /#hud-eq-cara\s+\.eq-ph::after\s*\{\s*content:\s*'CA'/);
+  assert.match(css, /#hud-eq-cuerpo\s+\.eq-ph::after\s*\{\s*content:\s*'CU'/);
+  assert.match(css, /#hud-eq-pies\s+\.eq-ph::after\s*\{\s*content:\s*'PI'/);
 });

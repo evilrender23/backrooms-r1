@@ -318,9 +318,11 @@
 
     const resizeCanvases = () => {
       const gc = document.getElementById('game-canvas');
-      const glc = document.getElementById('gl-canvas');
       if (gc) { gc.width = 240; gc.height = 282; }
-      if (glc) { glc.width = 240; glc.height = 282; }
+      // No tocar directamente width/height del canvas WebGL después de
+      // WebGLRenderer.init: hacerlo reinicia el drawing buffer sin actualizar
+      // viewport, cámara ni composer en el WebView del Rabbit.
+      if (window.Render3D?.resize) Render3D.resize(240, 282);
     };
     resizeCanvases();
     updateDesktopPreviewScale();

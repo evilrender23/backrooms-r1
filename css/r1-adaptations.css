@@ -59,6 +59,23 @@ html, body {
   object-fit: cover !important;
 }
 
+/* Composición estable para el WebView del Rabbit: WebGL al fondo y el
+   canvas 2D únicamente como overlay transparente. */
+#game-wrap.modo3d > #gl-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+}
+
+#game-wrap.modo3d > #game-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
 /* --- Pantalla de Título Optimizada R1 --- */
 #screen-title, #screen-title.title-interface-enabled {
   width: 240px !important;
@@ -235,6 +252,26 @@ html, body {
   align-items: center !important;
   justify-content: center !important;
 }
+
+.eq-ph {
+  width: 100% !important;
+  max-width: 100% !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.eq-ph::after {
+  display: block !important;
+  font-size: 5px !important;
+  line-height: 1 !important;
+  color: #999 !important;
+}
+
+#hud-eq-cara .eq-ph::after { content: 'CA'; }
+#hud-eq-cuerpo .eq-ph::after { content: 'CU'; }
+#hud-eq-pies .eq-ph::after { content: 'PI'; }
 
 #hud-manos {
   display: flex !important;

@@ -79,3 +79,20 @@ test('UI puede inicializar aunque el port omita paneles secundarios', () => {
   assert.match(ui, /const codexPanel = \$\('codex-panel'\);\s*if \(codexPanel\)/);
   assert.match(ui, /const changelogPanel = \$\('changelog-panel'\);\s*if \(changelogPanel\)/);
 });
+
+test('la URL de instalación permanece estable y las actualizaciones son automáticas', () => {
+  const creation = JSON.parse(fs.readFileSync(path.join(root, 'creation.json'), 'utf8'));
+  assert.equal(creation.url, 'https://evilrender23.github.io/backrooms-r1/');
+  assert.ok(fs.existsSync(path.join(root, 'version.json')), 'Falta version.json');
+  const version = JSON.parse(fs.readFileSync(path.join(root, 'version.json'), 'utf8'));
+  assert.match(version.build, /^\d{8}-\d{6}$/);
+  assert.match(html, /fetch\(['"]version\.json\?t=/);
+  assert.match(html, /cache:\s*['"]no-store['"]/);
+  assert.match(html, /sessionStorage/);
+  assert.match(html, /history\.replaceState/);
+});
+
+test('el actualizador no borra partidas ni preferencias persistentes', () => {
+  assert.doesNotMatch(html, /localStorage\.(?:clear|removeItem)\s*\(/);
+  assert.doesNotMatch(html, /indexedDB\.deleteDatabase\s*\(/);
+});

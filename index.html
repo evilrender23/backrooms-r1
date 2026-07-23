@@ -3,6 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=240, height=282, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(() => {
+  'use strict';
+  const CURRENT_BUILD = '20260723-194616';
+  const UPDATE_PARAM = '__r1v';
+  const ATTEMPT_KEY = 'backrooms-r1-update-attempt';
+  const cleanUrl = new URL(location.href);
+  const loadedBuild = cleanUrl.searchParams.get(UPDATE_PARAM);
+
+  if (loadedBuild === CURRENT_BUILD) {
+    cleanUrl.searchParams.delete(UPDATE_PARAM);
+    history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+    try { sessionStorage.removeItem(ATTEMPT_KEY); } catch (_) {}
+  }
+
+  fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(response => response.ok ? response.json() : null)
+    .then(remote => {
+      if (!remote || !remote.build || remote.build === CURRENT_BUILD) return;
+      try {
+        if (sessionStorage.getItem(ATTEMPT_KEY) === remote.build) return;
+        sessionStorage.setItem(ATTEMPT_KEY, remote.build);
+      } catch (_) {}
+      const updateUrl = new URL(location.href);
+      updateUrl.searchParams.set(UPDATE_PARAM, remote.build);
+      location.replace(updateUrl.href);
+    })
+    .catch(() => {});
+})();
+</script>
 <title>Backrooms R1</title>
 <link rel="stylesheet" href="css/style.css?v=296">
 <link rel="stylesheet" href="css/title-interface.css?v=296">

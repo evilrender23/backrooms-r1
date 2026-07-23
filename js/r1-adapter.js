@@ -293,6 +293,24 @@
     element.addEventListener('pointerleave', stopPress);
   }
 
+  // El Rabbit conserva su lienzo físico 240x282. En pantallas grandes solo
+  // escalamos la previsualización completa, sin alterar la resolución interna.
+  function updateDesktopPreviewScale() {
+    const desktop = window.innerWidth >= 480 && window.innerHeight >= 400;
+    document.documentElement.classList.toggle('r1-desktop-preview', desktop);
+    document.body.classList.toggle('r1-desktop-preview', desktop);
+
+    const app = document.getElementById('app');
+    if (!app) return;
+    if (!desktop) {
+      app.style.removeProperty('--r1-preview-scale');
+      return;
+    }
+
+    const fit = Math.min(window.innerWidth / 240, window.innerHeight / 282);
+    app.style.setProperty('--r1-preview-scale', String(Math.max(1, fit * 0.92)));
+  }
+
   // --- 4. INICIALIZACIÓN ---
   document.addEventListener('DOMContentLoaded', () => {
     initHardwareEvents();
@@ -305,7 +323,11 @@
       if (glc) { glc.width = 240; glc.height = 282; }
     };
     resizeCanvases();
-    window.addEventListener('resize', resizeCanvases);
+    updateDesktopPreviewScale();
+    window.addEventListener('resize', () => {
+      resizeCanvases();
+      updateDesktopPreviewScale();
+    });
 
     updateModalState();
     setInterval(updateModalState, 300);

@@ -46,8 +46,8 @@ test('el fundido queda limitado al lienzo r1 y no al navegador de escritorio', (
 });
 
 test('los recursos r1 corregidos invalidan la caché del entorno de pruebas', () => {
-  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 4);
-  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 4);
+  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 5);
+  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 5);
 });
 
 test('las pantallas controladas por display inline pueden permanecer ocultas', () => {
@@ -114,4 +114,14 @@ test('la rueda emite movimiento relativo al yaw de la cámara', () => {
   assert.match(adapter, /function visibleScrollableModal\(\)/);
   assert.match(adapter, /getComputedStyle\(panel\)\.display !== 'none'/);
   assert.match(main, /addEventListener\('r1CameraMove'/);
+});
+
+test('el preview de escritorio centra y escala el lienzo sin cambiar el Rabbit', () => {
+  assert.match(adapter, /function updateDesktopPreviewScale\(\)/);
+  assert.match(adapter, /window\.innerWidth >= 480 && window\.innerHeight >= 400/);
+  assert.match(adapter, /Math\.min\(window\.innerWidth \/ 240, window\.innerHeight \/ 282\)/);
+  assert.match(adapter, /classList\.toggle\('r1-desktop-preview', desktop\)/);
+  assert.match(css, /html\.r1-desktop-preview,\s*body\.r1-desktop-preview\s*\{[\s\S]*?width:\s*100vw\s*!important/);
+  assert.match(css, /body\.r1-desktop-preview\s*\{[\s\S]*?align-items:\s*center\s*!important;[\s\S]*?justify-content:\s*center\s*!important/);
+  assert.match(css, /body\.r1-desktop-preview\s*>\s*#app\s*\{[\s\S]*?transform:\s*scale\(var\(--r1-preview-scale\)\)/);
 });

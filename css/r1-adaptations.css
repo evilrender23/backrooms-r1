@@ -580,3 +580,30 @@ body.r1-modal-open #r1-touch-layer button {
   width: 240px !important;
   height: 282px !important;
 }
+
+/* Previsualización de escritorio: escala el dispositivo completo, no sus canvas. */
+html.r1-desktop-preview,
+body.r1-desktop-preview {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+body.r1-desktop-preview {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #050507 !important;
+}
+
+body.r1-desktop-preview > #app {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 0 240px !important;
+  width: 240px !important;
+  height: 282px !important;
+  transform: scale(var(--r1-preview-scale));
+  transform-origin: center center !important;
+}

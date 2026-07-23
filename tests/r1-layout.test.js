@@ -46,8 +46,8 @@ test('el fundido queda limitado al lienzo r1 y no al navegador de escritorio', (
 });
 
 test('los recursos r1 corregidos invalidan la caché del entorno de pruebas', () => {
-  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 2);
-  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 2);
+  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 4);
+  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 4);
 });
 
 test('las pantallas controladas por display inline pueden permanecer ocultas', () => {
@@ -96,4 +96,22 @@ test('la URL de instalación permanece estable y las actualizaciones son automá
 test('el actualizador no borra partidas ni preferencias persistentes', () => {
   assert.doesNotMatch(html, /localStorage\.(?:clear|removeItem)\s*\(/);
   assert.doesNotMatch(html, /indexedDB\.deleteDatabase\s*\(/);
+});
+
+test('la capa táctil no pinta un panel opaco sobre el juego', () => {
+  const touchLayer = rule('#r1-touch-layer');
+  assert.match(touchLayer, /background:\s*transparent\s*!important/);
+  assert.match(touchLayer, /box-shadow:\s*none\s*!important/);
+  assert.match(css, /\.r1-dpad,\s*\.r1-actions\s*\{[\s\S]*?background:\s*transparent\s*!important/);
+});
+
+test('la rueda emite movimiento relativo al yaw de la cámara', () => {
+  assert.match(adapter, /function cameraRelativeMove\(direction\)/);
+  assert.match(adapter, /const yaw = window\.Render3D\?\.yaw \|\| 0/);
+  assert.match(adapter, /dx:\s*-Math\.sin\(yaw\)\s*\*\s*direction/);
+  assert.match(adapter, /dy:\s*-Math\.cos\(yaw\)\s*\*\s*direction/);
+  assert.match(adapter, /new CustomEvent\('r1CameraMove'/);
+  assert.match(adapter, /function visibleScrollableModal\(\)/);
+  assert.match(adapter, /getComputedStyle\(panel\)\.display !== 'none'/);
+  assert.match(main, /addEventListener\('r1CameraMove'/);
 });

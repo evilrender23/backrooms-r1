@@ -449,6 +449,9 @@ html, body {
   pointer-events: none !important;
   z-index: 99 !important;
   display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
 
 body.r1-game-active #r1-touch-layer {
@@ -470,6 +473,12 @@ body.r1-modal-open #r1-touch-layer button {
 }
 
 /* D-Pad compacto */
+.r1-dpad, .r1-actions {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
 .r1-dpad {
   position: absolute !important;
   bottom: 4px !important;

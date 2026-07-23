@@ -910,6 +910,14 @@
   // v22: conjunto de teclas de movimiento PULSADAS (keydown/keyup); el vector
   // de input se calcula en cada frame del bucle — movimiento libre y suave
   const teclas = new Set();
+  const r1CameraInput = { dx: 0, dy: 0, until: 0 };
+  window.addEventListener('r1CameraMove', (ev) => {
+    const d = ev.detail || {};
+    if (!Number.isFinite(d.dx) || !Number.isFinite(d.dy)) return;
+    r1CameraInput.dx = d.dx;
+    r1CameraInput.dy = d.dy;
+    r1CameraInput.until = performance.now() + Math.max(80, Math.min(500, d.duration || 180));
+  });
   // pila de teclas de movimiento sostenidas SOLO para el paso offline por
   // turnos (teclado PC): si hay dos direcciones pulsadas a la vez, el
   // auto-repeat del SO dispara keydown de AMBAS de forma entrelazada y el
@@ -1432,14 +1440,17 @@
       p.inputY = sy;
       const tercera = use3D && Render3D.modo === 'tercera';
       const lastCode = ultimaTeclaMov();
+      const r1Active = performance.now() < r1CameraInput.until;
+      const r1dx = r1Active ? r1CameraInput.dx : 0;
+      const r1dy = r1Active ? r1CameraInput.dy : 0;
       if (tercera) {
         // v25 — estilo Roblox: WASD mueve RELATIVO A LA CÁMARA (adelante/
         // atrás/izquierda/derecha); la cámara solo la mueve el ratón.
         const yaw = Render3D.yaw;
         const Lx = -Math.sin(yaw), Lz = -Math.cos(yaw);  // «adelante» de la cámara
         const Rx = Math.cos(yaw), Rz = -Math.sin(yaw);   // «derecha» de la cámara
-        const dx = Lx * -sy + Rx * sx;
-        const dy = Lz * -sy + Rz * sx;
+        const dx = Lx * -sy + Rx * sx + r1dx;
+        const dy = Lz * -sy + Rz * sx + r1dy;
         Net.setInput(dx, dy);
         if (dx || dy) p.rot = Math.atan2(dx, -dy); // rumbo real (movimiento/ataques): vector combinado
         // sprite: solo la última tecla sostenida (sin teclado —mando/joystick—, el vector real)
@@ -1449,7 +1460,9 @@
         if (kdx || kdy) p.rotSprite = Math.atan2(kdx, -kdy);
       } else {
         // 2D / cámara alta: 8 direcciones relativas a la pantalla
-        const [dx, dy] = rotaPantalla(sx, sy);
+        let [dx, dy] = rotaPantalla(sx, sy);
+        dx += r1dx;
+        dy += r1dy;
         Net.setInput(dx, dy);
         if (dx || dy) Net.setRot(Math.atan2(dx, -dy)); // rumbo real: vector combinado
         // sprite: solo la última tecla sostenida

@@ -45,6 +45,29 @@
     }, duration);
   }
 
+  // La rueda del r1 expresa avance/retroceso según la orientación horizontal
+  // actual de la cámara, nunca según ejes fijos del mapa.
+  function cameraRelativeMove(direction) {
+    const yaw = window.Render3D?.yaw || 0;
+    window.dispatchEvent(new CustomEvent('r1CameraMove', {
+      detail: {
+        dx: -Math.sin(yaw) * direction,
+        dy: -Math.cos(yaw) * direction,
+        duration: 180
+      }
+    }));
+  }
+
+  function visibleScrollableModal() {
+    return Array.from(document.querySelectorAll('.modal-box, .end-box')).find((box) => {
+      const panel = box.closest(
+        '#backpack-panel, #item-modal, #exit-modal, #choice-modal, #journal-panel, #sound-menu, #screen-end, #log-panel'
+      ) || box;
+      return getComputedStyle(panel).display !== 'none' &&
+        getComputedStyle(panel).visibility !== 'hidden';
+    });
+  }
+
   // --- Detección continua de Modales para adaptar capa táctil ---
   function updateModalState() {
     const modals = [
@@ -97,28 +120,28 @@
   }
 
   function handleScrollUp() {
-    const activeModal = document.querySelector('.modal-box:not([style*="display: none"]), .end-box:not([style*="display: none"])');
+    const activeModal = visibleScrollableModal();
     if (activeModal) {
       activeModal.scrollTop -= 24;
       return;
     }
 
     if (isGameActive()) {
-      pressKey('KeyW', 140);
+      cameraRelativeMove(1);
     } else {
       navigateMenu(-1);
     }
   }
 
   function handleScrollDown() {
-    const activeModal = document.querySelector('.modal-box:not([style*="display: none"]), .end-box:not([style*="display: none"])');
+    const activeModal = visibleScrollableModal();
     if (activeModal) {
       activeModal.scrollTop += 24;
       return;
     }
 
     if (isGameActive()) {
-      pressKey('KeyS', 140);
+      cameraRelativeMove(-1);
     } else {
       navigateMenu(1);
     }

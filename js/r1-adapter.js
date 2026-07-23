@@ -1,20 +1,18 @@
 /**
  * js/r1-adapter.js - Adaptador de Controles y Funcionalidades para Rabbit R1
- * Conecta los eventos de hardware de R1 (Scroll Wheel, PTT, Acelerómetro, LLM)
- * y los controles táctiles en pantalla con la lógica de Backrooms.
+ * Gestiona el mapeo de la rueda de desplazamiento, botón lateral PTT,
+ * controles táctiles, acelerómetro y detección automática de modales para 240x282.
  */
 
 (function() {
   'use strict';
 
-  console.log('[R1Adapter] Inicializando adaptador para rabbit r1 (240x282)...');
+  console.log('[R1Adapter] Inicializando adaptador de controles y maquetación (240x282)...');
 
-  // Estado global del adaptador R1
   const R1State = {
     llmOpen: false,
     accelEnabled: false,
-    currentFocusIndex: 0,
-    activeKeys: new Set()
+    currentFocusIndex: 0
   };
 
   // Enviar evento de teclado simulado al documento
@@ -47,21 +45,38 @@
     }, duration);
   }
 
-  // --- 1. CONFIGURACIÓN DE CONTROLES DE HARDWARE (RUEDA DE DESPLAZAMIENTO & BOTÓN PTT) ---
+  // --- Detección continua de Modales para adaptar capa táctil ---
+  function updateModalState() {
+    const modals = [
+      'backpack-panel', 'item-modal', 'exit-modal', 'choice-modal',
+      'journal-panel', 'sound-menu', 'screen-end', 'log-panel', 'r1-llm-panel'
+    ];
+    let isModalOpen = false;
+    for (const id of modals) {
+      const el = document.getElementById(id);
+      if (el && el.style.display !== 'none' && !el.classList.contains('hidden')) {
+        isModalOpen = true;
+        break;
+      }
+    }
+
+    const screenTitle = document.getElementById('screen-title');
+    if (screenTitle && screenTitle.style.display !== 'none') {
+      isModalOpen = true;
+    }
+
+    if (isModalOpen) {
+      document.body.classList.add('r1-modal-open');
+    } else {
+      document.body.classList.remove('r1-modal-open');
+    }
+  }
+
+  // --- 1. CONFIGURACIÓN DE RUEDA DE DESPLAZAMIENTO & PTT ---
   function initHardwareEvents() {
-    if (!window.R1Bridge) return;
+    window.addEventListener('scrollUp', () => handleScrollUp());
+    window.addEventListener('scrollDown', () => handleScrollDown());
 
-    // Rueda de desplazamiento hacia arriba (scrollUp)
-    window.addEventListener('scrollUp', () => {
-      handleScrollUp();
-    });
-
-    // Rueda de desplazamiento hacia abajo (scrollDown)
-    window.addEventListener('scrollDown', () => {
-      handleScrollDown();
-    });
-
-    // Evento wheel estándar para simulador/navegador
     window.addEventListener('wheel', (e) => {
       if (e.deltaY < 0) {
         handleScrollUp();
@@ -70,51 +85,46 @@
       }
     }, { passive: true });
 
-    // Botón lateral PTT (sideClick - Clic rápido)
-    window.addEventListener('sideClick', () => {
-      handleSideClick();
-    });
+    window.addEventListener('sideClick', () => handleSideClick());
+    window.addEventListener('longPressStart', () => triggerLLMAssistant());
 
-    // Botón lateral PTT (longPressStart - Pulsación larga -> LLM)
-    window.addEventListener('longPressStart', () => {
-      triggerLLMAssistant();
-    });
-
-    // Escuchar respuestas de rabbitOS LLM
-    R1Bridge.onMessage((data) => {
-      handleLLMResponse(data);
-    });
+    if (window.R1Bridge) {
+      R1Bridge.onMessage((data) => handleLLMResponse(data));
+    }
   }
 
   function handleScrollUp() {
-    const inGame = isGameActive();
-    if (inGame) {
-      // Avanzar en 3D
-      pressKey('KeyW', 150);
+    const activeModal = document.querySelector('.modal-box:not([style*="display: none"]), .end-box:not([style*="display: none"])');
+    if (activeModal) {
+      activeModal.scrollTop -= 24;
+      return;
+    }
+
+    if (isGameActive()) {
+      pressKey('KeyW', 140);
     } else {
-      // Navegar elementos de menú arriba
       navigateMenu(-1);
     }
   }
 
   function handleScrollDown() {
-    const inGame = isGameActive();
-    if (inGame) {
-      // Retroceder en 3D
-      pressKey('KeyS', 150);
+    const activeModal = document.querySelector('.modal-box:not([style*="display: none"]), .end-box:not([style*="display: none"])');
+    if (activeModal) {
+      activeModal.scrollTop += 24;
+      return;
+    }
+
+    if (isGameActive()) {
+      pressKey('KeyS', 140);
     } else {
-      // Navegar elementos de menú abajo
       navigateMenu(1);
     }
   }
 
   function handleSideClick() {
-    const inGame = isGameActive();
-    if (inGame) {
-      // Alternar linterna (F)
+    if (isGameActive()) {
       pressKey('KeyF');
     } else {
-      // Activar / Pulsar botón seleccionado
       clickActiveMenuElement();
     }
   }
@@ -155,25 +165,26 @@
     if (!llmPanel || !llmText) return;
 
     llmPanel.classList.remove('hidden');
+    updateModalState();
     llmText.textContent = 'Consultando superordenador R1 sobre las Backrooms...';
 
-    // Obtener estado actual del jugador si está en juego
-    let contextPrompt = 'El jugador acaba de iniciar su incursión en las Backrooms.';
+    let contextPrompt = 'El jugador está explorando las Backrooms.';
     if (window.Game && window.Game.world && window.Game.world.jugador) {
       const w = window.Game.world;
       const lvl = w.level ? w.level.nombre || w.level.id : 'Level 0';
       const salud = w.jugador.salud || 100;
       const cordura = w.jugador.cordura || 100;
-      contextPrompt = `El jugador está explorando ${lvl} en las Backrooms. Salud: ${salud}%, Cordura: ${cordura}%. Dale una advertencia táctica muy breve (2 frases) sobre peligros y consejos de supervivencia en este nivel de las Backrooms.`;
+      contextPrompt = `El jugador explora ${lvl} en las Backrooms. Salud: ${salud}%, Cordura: ${cordura}%. Dale un consejo táctico breve de 2 frases sobre peligros y supervivencia.`;
     }
 
-    // Enviar solicitud a rabbitOS LLM vía R1Bridge
-    R1Bridge.postMessage({
-      message: contextPrompt,
-      useLLM: true,
-      wantsR1Response: true,
-      wantsJournalEntry: false
-    });
+    if (window.R1Bridge) {
+      R1Bridge.postMessage({
+        message: contextPrompt,
+        useLLM: true,
+        wantsR1Response: true,
+        wantsJournalEntry: false
+      });
+    }
   }
 
   function handleLLMResponse(data) {
@@ -211,7 +222,6 @@
     const btnLLM = document.getElementById('r1-btn-llm');
     const btnCloseLLM = document.getElementById('r1-llm-close');
 
-    // Mapear botones táctiles a eventos de pulsación continua o clic
     bindTouchHold(dpadUp, 'KeyW');
     bindTouchHold(dpadDown, 'KeyS');
     bindTouchHold(dpadLeft, 'KeyA');
@@ -224,6 +234,7 @@
     if (btnLLM) btnLLM.addEventListener('pointerdown', () => triggerLLMAssistant());
     if (btnCloseLLM) btnCloseLLM.addEventListener('click', () => {
       document.getElementById('r1-llm-panel').classList.add('hidden');
+      updateModalState();
     });
   }
 
@@ -256,39 +267,11 @@
     element.addEventListener('pointerleave', stopPress);
   }
 
-  // --- 4. CONTROL VÍA ACELERÓMETRO (OPCIONAL EN R1) ---
-  function initAccelerometer() {
-    if (!R1Bridge.accelerometer) return;
-
-    R1Bridge.accelerometer.isAvailable().then(available => {
-      if (!available) return;
-      console.log('[R1Adapter] Acelerómetro detectado en r1');
-      R1Bridge.accelerometer.start((data) => {
-        // data.x: inclinación lateral (-1 a 1), data.y: inclinación frontal (-1 a 1)
-        if (!isGameActive()) return;
-
-        if (data.x > 0.35) {
-          sendKeyEvent('keydown', 'KeyD');
-        } else if (data.x < -0.35) {
-          sendKeyEvent('keydown', 'KeyA');
-        }
-
-        if (data.y > 0.35) {
-          sendKeyEvent('keydown', 'KeyS');
-        } else if (data.y < -0.35) {
-          sendKeyEvent('keydown', 'KeyW');
-        }
-      }, { frequency: 30 });
-    });
-  }
-
-  // --- 5. INICIALIZACIÓN COMPLETA AL CARGAR EL DOM ---
+  // --- 4. INICIALIZACIÓN ---
   document.addEventListener('DOMContentLoaded', () => {
     initHardwareEvents();
     initTouchControls();
-    initAccelerometer();
 
-    // Auto-ajustar canvas a 240x282 en todo momento
     const resizeCanvases = () => {
       const gc = document.getElementById('game-canvas');
       const glc = document.getElementById('gl-canvas');
@@ -298,7 +281,9 @@
     resizeCanvases();
     window.addEventListener('resize', resizeCanvases);
 
-    console.log('[R1Adapter] Adaptador r1 listo. Pantalla fijada a 240x282 px.');
+    setInterval(updateModalState, 300);
+
+    console.log('[R1Adapter] Adaptador r1 listo. Pantalla fijada a 240x282 px con soporte de modales.');
   });
 
 })();

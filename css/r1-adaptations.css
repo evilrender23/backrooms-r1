@@ -1,6 +1,6 @@
 /* ==========================================================================
    R1 ADAPTATIONS - CSS PARA RABBIT R1 (240x282 px)
-   Ajustes y diseño adaptado para la pantalla de Rabbit R1
+   Ajustes exhaustivos y corrección de maquetación para la pantalla pequeña de r1
    ========================================================================== */
 
 :root {
@@ -9,13 +9,13 @@
   --r1-yellow: #f5d742;
   --r1-yellow-dim: #cfa81d;
   --r1-dark: #0a0a0c;
-  --r1-panel: rgba(18, 18, 22, 0.92);
-  --r1-border: rgba(245, 215, 66, 0.3);
+  --r1-panel: rgba(14, 14, 18, 0.96);
+  --r1-border: rgba(245, 215, 66, 0.4);
   --r1-text: #e0e0e0;
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
   touch-action: manipulation;
 }
 
@@ -27,339 +27,527 @@ html, body {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background-color: var(--r1-dark);
-  font-family: 'Press Start 2P', monospace, sans-serif;
-  font-size: 9px;
-  user-select: none;
-  -webkit-user-select: none;
+  background-color: var(--r1-dark) !important;
+  font-family: 'Press Start 2P', monospace, sans-serif !important;
+  font-size: 8px !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 #app {
   width: 240px !important;
   height: 282px !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  overflow: hidden !important;
 }
 
 /* --- Canvas y Wrap de Juego --- */
 #game-wrap {
   width: 240px !important;
   height: 282px !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  overflow: hidden !important;
 }
 
 #game-canvas, #gl-canvas {
   width: 240px !important;
   height: 282px !important;
-  object-fit: cover;
+  object-fit: cover !important;
 }
 
 /* --- Pantalla de Título Optimizada R1 --- */
-#screen-title {
+#screen-title, #screen-title.title-interface-enabled {
   width: 240px !important;
   height: 282px !important;
-  padding: 6px !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background: radial-gradient(circle at center, #1a1910 0%, #050504 100%);
-  overflow-y: auto;
+  padding: 4px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: radial-gradient(circle at center, #1a1910 0%, #050504 100%) !important;
+  overflow-y: auto !important;
 }
 
-#screen-title .title-box {
-  width: 100%;
-  text-align: center;
-  padding: 2px;
+#screen-title .title-box, #screen-title.title-interface-enabled .title-box {
+  width: 100% !important;
+  max-width: 232px !important;
+  margin: 0 auto !important;
+  padding: 4px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-align: center !important;
 }
 
 #screen-title h1 {
-  font-size: 13px !important;
-  letter-spacing: 1px;
-  color: var(--r1-yellow);
-  text-shadow: 0 0 8px rgba(245, 215, 66, 0.6);
-  margin: 4px 0 2px 0 !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  color: var(--r1-yellow) !important;
+  text-shadow: 0 0 6px rgba(245, 215, 66, 0.6) !important;
+  margin: 2px 0 !important;
+  line-height: 1.1 !important;
 }
 
 #screen-title .subtitle {
-  font-size: 7px !important;
-  color: #a0a080;
-  margin-bottom: 6px !important;
+  font-size: 6.5px !important;
+  color: #a0a080 !important;
+  margin: 1px 0 4px 0 !important;
+  line-height: 1.1 !important;
 }
 
 #screen-title .intro-text {
-  font-size: 7px !important;
-  line-height: 1.2;
-  color: #cccccc;
-  margin: 4px 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 6px !important;
+  line-height: 1.2 !important;
+  color: #cccccc !important;
+  margin: 2px 0 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
 
 #backrooms-census {
-  font-size: 6px !important;
+  font-size: 5.5px !important;
   padding: 2px 4px !important;
-  margin: 4px 0 !important;
+  margin: 2px 0 !important;
 }
 
 #profile-box {
-  background: var(--r1-panel);
-  border: 1px solid var(--r1-border);
-  border-radius: 4px;
+  background: var(--r1-panel) !important;
+  border: 1px solid var(--r1-border) !important;
+  border-radius: 4px !important;
   padding: 4px !important;
-  margin: 4px 0 !important;
-  width: 100%;
+  margin: 3px 0 !important;
+  width: 100% !important;
 }
 
 #profile-box .profile-title {
-  font-size: 7px !important;
-  color: var(--r1-yellow);
-  margin-bottom: 3px;
+  font-size: 6.5px !important;
+  color: var(--r1-yellow) !important;
+  margin-bottom: 2px !important;
 }
 
 .profile-row {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 3px;
-  align-items: center;
+  display: flex !important;
+  gap: 2px !important;
+  margin-bottom: 2px !important;
+  align-items: center !important;
+  width: 100% !important;
 }
 
 #profile-select, #profile-name {
-  font-size: 8px !important;
-  padding: 2px 4px !important;
-  height: 22px;
-  background: #111;
-  color: #fff;
-  border: 1px solid #444;
-  border-radius: 3px;
+  font-size: 7.5px !important;
+  padding: 2px 3px !important;
+  height: 20px !important;
+  background: #111 !important;
+  color: #fff !important;
+  border: 1px solid #444 !important;
+  border-radius: 3px !important;
 }
 
-#profile-select { flex: 1; min-width: 0; }
-#profile-name { flex: 1; min-width: 0; }
+#profile-select { flex: 1 !important; min-width: 0 !important; }
+#profile-name { flex: 1 !important; min-width: 0 !important; }
 
 .btn-small, .btn-mode, .btn-big {
-  font-size: 8px !important;
+  font-size: 7.5px !important;
   padding: 4px 6px !important;
   border-radius: 4px !important;
-  cursor: pointer;
-  touch-action: manipulation;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
 }
 
 .btn-mode-solo, .btn-mode-online {
   width: 100% !important;
-  margin: 2px 0 !important;
+  margin: 3px 0 !important;
   padding: 6px 4px !important;
+  min-height: 32px !important;
 }
 
 .btn-mode-title {
-  font-size: 9px !important;
-  display: block;
+  font-size: 8.5px !important;
+  display: block !important;
 }
 
 .btn-mode-sub {
+  font-size: 5.5px !important;
+  opacity: 0.85 !important;
+  display: block !important;
+}
+
+/* --- Tarjeta de Nivel (Screen Card) --- */
+#screen-card {
+  width: 240px !important;
+  height: 282px !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#screen-card .level-card {
+  width: 100% !important;
+  max-width: 232px !important;
+  height: 272px !important;
+  max-height: 272px !important;
+  overflow-y: auto !important;
+  padding: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  margin: auto !important;
+  background: rgba(10, 10, 14, 0.96) !important;
+  border: 1px solid var(--r1-border) !important;
+  border-radius: 6px !important;
+}
+
+#card-name { font-size: 11px !important; color: var(--r1-yellow) !important; margin: 2px 0 !important; }
+#card-class { font-size: 7px !important; color: #ff6666 !important; margin: 2px 0 !important; }
+#card-desc { font-size: 6.5px !important; line-height: 1.2 !important; color: #ddd !important; margin: 4px 0 !important; }
+#card-quote { font-size: 6px !important; color: #aaa !important; font-style: italic !important; margin: 2px 0 !important; }
+#card-rules { font-size: 6px !important; color: #ccc !important; margin: 2px 0 !important; }
+#btn-enter { width: 100% !important; font-size: 9px !important; padding: 8px !important; margin-top: 4px !important; min-height: 30px !important; background: var(--r1-yellow) !important; color: #000 !important; font-weight: bold !important; }
+
+/* --- HUD en Juego (Manos, Equipo, Moodles, Log) --- */
+#hud-equipo {
+  display: flex !important;
+  position: absolute !important;
+  top: 4px !important;
+  left: 4px !important;
+  gap: 3px !important;
+  z-index: 100 !important;
+  transform: none !important;
+}
+
+.eq-hud-slot {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 5.5px !important;
+  padding: 0 !important;
+  border: 1px solid #444 !important;
+  background: rgba(0,0,0,0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#hud-manos {
+  display: flex !important;
+  position: absolute !important;
+  top: 30px !important;
+  left: 4px !important;
+  gap: 4px !important;
+  z-index: 100 !important;
+  transform: none !important;
+  align-items: center !important;
+}
+
+.mano-slot {
+  width: 30px !important;
+  height: 30px !important;
+  border: 1px solid var(--r1-border) !important;
+  background: rgba(0,0,0,0.75) !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#btn-mochila {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 4px !important;
+  background: rgba(245, 215, 66, 0.2) !important;
+  border: 1px solid var(--r1-yellow) !important;
+  color: var(--r1-yellow) !important;
+  font-size: 10px !important;
+  padding: 0 !important;
+}
+
+#moodles {
+  display: flex !important;
+  flex-direction: column !important;
+  position: absolute !important;
+  top: 4px !important;
+  right: 4px !important;
+  gap: 2px !important;
+  z-index: 100 !important;
+}
+
+#moodles .moodle {
   font-size: 6px !important;
-  opacity: 0.8;
-  display: block;
+  padding: 1px 3px !important;
+  border-radius: 3px !important;
+  background: rgba(0,0,0,0.7) !important;
+}
+
+#game-log {
+  position: absolute !important;
+  top: 66px !important;
+  left: 4px !important;
+  width: 140px !important;
+  max-height: 45px !important;
+  overflow: hidden !important;
+  font-size: 6px !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px #000, 0 0 3px #000 !important;
+  pointer-events: none !important;
+  z-index: 95 !important;
+}
+
+/* --- Mochila Adaptada (Backpack Modal) --- */
+#backpack-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 240px !important;
+  height: 282px !important;
+  background: rgba(0, 0, 0, 0.88) !important;
+  z-index: 400 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#backpack-box {
+  width: 232px !important;
+  max-width: 232px !important;
+  height: 272px !important;
+  max-height: 272px !important;
+  overflow-y: auto !important;
+  padding: 5px !important;
+  background: #0e0e12 !important;
+  border: 1px solid var(--r1-yellow) !important;
+  border-radius: 6px !important;
+  font-size: 7px !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.9) !important;
+}
+
+#backpack-box h3 {
+  font-size: 8.5px !important;
+  color: var(--r1-yellow) !important;
+  margin: 0 0 4px 0 !important;
+}
+
+#backpack-layout {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 2px 0 !important;
+}
+
+.bp-mano-col {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+.bp-label { font-size: 5.5px !important; color: #aaa !important; }
+
+#backpack-slots {
+  display: grid !important;
+  grid-template-columns: repeat(4, 36px) !important;
+  gap: 3px !important;
+  justify-content: center !important;
+}
+
+.slot, .eq-slot, .bp-mano {
+  width: 36px !important;
+  height: 36px !important;
+  border: 1px solid #444 !important;
+  background: rgba(20, 20, 25, 0.8) !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#bp-equipo {
+  display: flex !important;
+  gap: 4px !important;
+  justify-content: center !important;
+  margin: 4px 0 !important;
+  align-items: center !important;
+}
+
+.bp-eq-label { font-size: 5.5px !important; color: var(--r1-yellow) !important; }
+
+#bp-hint { font-size: 5.5px !important; line-height: 1.1 !important; margin: 2px 0 !important; }
+
+#btn-backpack-close {
+  width: 100% !important;
+  font-size: 8px !important;
+  padding: 6px !important;
+  margin-top: 3px !important;
+  min-height: 26px !important;
+  background: #333 !important;
+  color: #fff !important;
+}
+
+/* --- Modales Generales (Ficha Objeto, Salida, Ajustes, Diario, Fin) --- */
+#item-modal, #exit-modal, #choice-modal, #journal-panel, #sound-menu, #screen-end, #log-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 240px !important;
+  height: 282px !important;
+  background: rgba(0, 0, 0, 0.88) !important;
+  z-index: 450 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.modal-box, .end-box {
+  width: 230px !important;
+  max-width: 230px !important;
+  max-height: 270px !important;
+  overflow-y: auto !important;
+  padding: 6px !important;
+  background: #111116 !important;
+  border: 1px solid var(--r1-yellow) !important;
+  border-radius: 6px !important;
+  font-size: 7.5px !important;
+}
+
+.modal-box h3, .end-box h1 {
+  font-size: 9.5px !important;
+  color: var(--r1-yellow) !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.modal-btns {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 3px !important;
+  justify-content: space-between !important;
+  margin-top: 4px !important;
+}
+
+.modal-btns button {
+  flex: 1 1 45% !important;
+  font-size: 7px !important;
+  padding: 5px 2px !important;
+  min-height: 26px !important;
 }
 
 /* --- Controles Táctiles Overlay R1 --- */
 #r1-touch-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 282px;
-  pointer-events: none;
-  z-index: 99;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 240px !important;
+  height: 282px !important;
+  pointer-events: none !important;
+  z-index: 99 !important;
 }
 
 #r1-touch-layer button {
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
-/* D-Pad compacto en esquina inferior izquierda */
+/* Ocultar / reducir interferencia táctil en modales abiertos */
+body.r1-modal-open #r1-touch-layer {
+  pointer-events: none !important;
+  opacity: 0.15 !important;
+}
+
+body.r1-modal-open #r1-touch-layer button {
+  pointer-events: none !important;
+}
+
+/* D-Pad compacto */
 .r1-dpad {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  width: 78px;
-  height: 78px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 2px;
+  position: absolute !important;
+  bottom: 4px !important;
+  left: 4px !important;
+  width: 76px !important;
+  height: 76px !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-rows: repeat(3, 1fr) !important;
+  gap: 2px !important;
 }
 
 .r1-dpad button {
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid var(--r1-border);
-  color: var(--r1-yellow);
-  font-size: 11px;
-  font-weight: bold;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  active-bg: rgba(245, 215, 66, 0.4);
+  background: rgba(0, 0, 0, 0.7) !important;
+  border: 1px solid var(--r1-border) !important;
+  color: var(--r1-yellow) !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
 
 .r1-dpad button:active, .r1-dpad button.active {
-  background: rgba(245, 215, 66, 0.5) !important;
-  color: #000;
+  background: rgba(245, 215, 66, 0.6) !important;
+  color: #000 !important;
 }
 
-.r1-dpad-up { grid-column: 2; grid-row: 1; }
-.r1-dpad-left { grid-column: 1; grid-row: 2; }
-.r1-dpad-center { grid-column: 2; grid-row: 2; background: rgba(30, 30, 30, 0.5) !important; font-size: 7px; opacity: 0.6; }
-.r1-dpad-right { grid-column: 3; grid-row: 2; }
-.r1-dpad-down { grid-column: 2; grid-row: 3; }
+.r1-dpad-up { grid-column: 2 !important; grid-row: 1 !important; }
+.r1-dpad-left { grid-column: 1 !important; grid-row: 2 !important; }
+.r1-dpad-center { grid-column: 2 !important; grid-row: 2 !important; background: rgba(30, 30, 30, 0.6) !important; font-size: 6.5px !important; opacity: 0.7 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+.r1-dpad-right { grid-column: 3 !important; grid-row: 2 !important; }
+.r1-dpad-down { grid-column: 2 !important; grid-row: 3 !important; }
 
-/* Botones de acción vertical en esquina inferior derecha */
+/* Botones de Acción en Esquina Inferior Derecha */
 .r1-actions {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  position: absolute !important;
+  bottom: 4px !important;
+  right: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
 }
 
 .r1-btn-action {
-  width: 44px;
-  height: 26px;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid var(--r1-border);
-  color: #fff;
-  border-radius: 4px;
-  font-size: 7px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 1px 2px #000;
+  width: 42px !important;
+  height: 24px !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  border: 1px solid var(--r1-border) !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  font-size: 6.5px !important;
+  font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .r1-btn-action:active {
-  background: var(--r1-yellow);
-  color: #000;
+  background: var(--r1-yellow) !important;
+  color: #000 !important;
 }
 
-.r1-btn-luz { border-color: #ffaa00; }
-.r1-btn-act { border-color: #00ff88; font-size: 8px; }
-.r1-btn-llm { border-color: #00ccff; color: #77e5ff; }
+.r1-btn-luz { border-color: #ffaa00 !important; }
+.r1-btn-act { border-color: #00ff88 !important; font-size: 7.5px !important; }
+.r1-btn-llm { border-color: #00ccff !important; color: #77e5ff !important; }
 
-/* Barra superior de estado e info R1 */
-.r1-topbar {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  pointer-events: none;
-  z-index: 100;
-}
-
-.r1-topbar button {
-  pointer-events: auto;
-}
-
-.r1-badge {
-  background: rgba(245, 215, 66, 0.2);
-  border: 1px solid var(--r1-yellow);
-  color: var(--r1-yellow);
-  font-size: 6px;
-  padding: 1px 4px;
-  border-radius: 3px;
-}
-
-.r1-wheel-hint {
-  font-size: 6px;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.6);
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-
-/* --- Panel de Asistente de Supervivencia LLM r1 --- */
+/* Asistente LLM Panel */
 #r1-llm-panel {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  background: rgba(10, 12, 16, 0.96);
-  border: 2px solid var(--r1-yellow);
-  border-radius: 6px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  z-index: 500;
-  box-shadow: 0 0 15px rgba(245, 215, 66, 0.3);
-}
-
-#r1-llm-panel.hidden {
-  display: none !important;
-}
-
-.r1-llm-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--r1-border);
-  padding-bottom: 4px;
-  margin-bottom: 6px;
-}
-
-.r1-llm-header h4 {
-  margin: 0;
-  font-size: 9px;
-  color: var(--r1-yellow);
+  position: absolute !important;
+  inset: 6px !important;
+  width: 228px !important;
+  height: 270px !important;
+  background: rgba(10, 12, 16, 0.98) !important;
+  border: 2px solid var(--r1-yellow) !important;
+  border-radius: 6px !important;
+  padding: 6px !important;
+  z-index: 600 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
 
 .r1-llm-body {
-  flex: 1;
-  font-size: 7px;
-  line-height: 1.3;
-  color: #e6e6e6;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.r1-llm-body p {
-  margin: 0 0 6px 0;
-}
-
-/* Modales adaptados a 240x282 */
-.modal-box {
-  max-width: 220px !important;
-  padding: 8px !important;
-  font-size: 8px !important;
-}
-
-#hud-manos, #hud-equipo {
-  transform: scale(0.85);
-  transform-origin: bottom left;
-}
-
-/* Indicador de estado de la rueda / sensor */
-.r1-motion-indicator {
-  position: absolute;
-  top: 24px;
-  right: 6px;
-  font-size: 6px;
-  color: #88ff88;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 1px 3px;
-  border-radius: 2px;
+  font-size: 6.5px !important;
+  line-height: 1.25 !important;
 }

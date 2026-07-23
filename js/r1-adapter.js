@@ -60,6 +60,9 @@
       }
     }
 
+    const gameActive = isGameActive();
+    document.body.classList.toggle('r1-game-active', gameActive);
+
     const screenTitle = document.getElementById('screen-title');
     if (screenTitle && screenTitle.style.display !== 'none') {
       isModalOpen = true;
@@ -281,6 +284,7 @@
     resizeCanvases();
     window.addEventListener('resize', resizeCanvases);
 
+    updateModalState();
     setInterval(updateModalState, 300);
 
     console.log('[R1Adapter] Adaptador r1 listo. Pantalla fijada a 240x282 px con soporte de modales.');

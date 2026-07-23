@@ -144,6 +144,7 @@ html, body {
   font-size: 7.5px !important;
   padding: 2px 3px !important;
   height: 20px !important;
+  min-height: 0 !important;
   background: #111 !important;
   color: #fff !important;
   border: 1px solid #444 !important;
@@ -401,12 +402,14 @@ html, body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  padding: 4px !important;
+  overflow: hidden !important;
 }
 
 .modal-box, .end-box {
-  width: 230px !important;
-  max-width: 230px !important;
-  max-height: 270px !important;
+  width: 100% !important;
+  max-width: 232px !important;
+  max-height: 274px !important;
   overflow-y: auto !important;
   padding: 6px !important;
   background: #111116 !important;
@@ -445,6 +448,11 @@ html, body {
   height: 282px !important;
   pointer-events: none !important;
   z-index: 99 !important;
+  display: none !important;
+}
+
+body.r1-game-active #r1-touch-layer {
+  display: block !important;
 }
 
 #r1-touch-layer button {
@@ -550,4 +558,12 @@ body.r1-modal-open #r1-touch-layer button {
 .r1-llm-body {
   font-size: 6.5px !important;
   line-height: 1.25 !important;
+}
+
+/* El fundido pertenece al lienzo r1, no al viewport del navegador anfitrión. */
+#fade {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  width: 240px !important;
+  height: 282px !important;
 }

@@ -6,6 +6,14 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const css = fs.readFileSync(path.join(root, 'css/r1-adaptations.css'), 'utf8');
 const adapter = fs.readFileSync(path.join(root, 'js/r1-adapter.js'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+
+function r1AssetVersion(asset) {
+  const escapedAsset = asset.replace(/\./g, '\\.');
+  const match = html.match(new RegExp(`${escapedAsset}\\?v=(\\d+)`));
+  assert.ok(match, `Falta versión de caché para ${asset}`);
+  return Number(match[1]);
+}
 
 function rule(selector) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -33,4 +41,9 @@ test('el fundido queda limitado al lienzo r1 y no al navegador de escritorio', (
   assert.match(rule('#fade'), /position:\s*absolute\s*!important/);
   assert.match(rule('#fade'), /width:\s*240px\s*!important/);
   assert.match(rule('#fade'), /height:\s*282px\s*!important/);
+});
+
+test('los recursos r1 corregidos invalidan la caché del entorno de pruebas', () => {
+  assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 2);
+  assert.ok(r1AssetVersion('js/r1-adapter.js') >= 2);
 });

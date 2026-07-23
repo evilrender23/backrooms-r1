@@ -65,7 +65,7 @@ html, body {
   height: 282px !important;
   padding: 4px !important;
   margin: 0 !important;
-  display: flex !important;
+  display: flex;
   flex-direction: column !important;
   justify-content: space-between !important;
   align-items: center !important;
@@ -185,7 +185,7 @@ html, body {
   width: 240px !important;
   height: 282px !important;
   padding: 4px !important;
-  display: flex !important;
+  display: flex;
   align-items: center !important;
   justify-content: center !important;
 }
@@ -309,7 +309,7 @@ html, body {
   height: 282px !important;
   background: rgba(0, 0, 0, 0.88) !important;
   z-index: 400 !important;
-  display: flex !important;
+  display: flex;
   align-items: center !important;
   justify-content: center !important;
 }
@@ -399,7 +399,7 @@ html, body {
   height: 282px !important;
   background: rgba(0, 0, 0, 0.88) !important;
   z-index: 450 !important;
-  display: flex !important;
+  display: flex;
   align-items: center !important;
   justify-content: center !important;
   padding: 4px !important;
@@ -553,6 +553,10 @@ body.r1-modal-open #r1-touch-layer button {
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
+}
+
+#r1-llm-panel.hidden {
+  display: none !important;
 }
 
 .r1-llm-body {

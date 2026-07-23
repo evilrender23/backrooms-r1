@@ -231,11 +231,13 @@
     Object.assign(window.OPTS, storedOpts);
   } catch (e) { /* opciones corruptas: valores por defecto */ }
   const optDado = document.getElementById('opt-dado');
-  optDado.checked = OPTS.dado;
-  optDado.onchange = () => {
-    OPTS.dado = optDado.checked;
-    try { localStorage.setItem('backrooms-opts', JSON.stringify(OPTS)); } catch (e) {}
-  };
+  if (optDado) {
+    optDado.checked = OPTS.dado;
+    optDado.onchange = () => {
+      OPTS.dado = optDado.checked;
+      try { localStorage.setItem('backrooms-opts', JSON.stringify(OPTS)); } catch (e) {}
+    };
+  }
 
   // contador de FPS en pantalla (v30.7): tick en Ajustes; el propio bucle de
   // frames lo alimenta (media de ~500 ms para que no baile)
@@ -362,7 +364,8 @@
     pintarBtnMute();
     actualizarAdminUI(); // debug y barras solo con la contraseña de guardián
     const enJuego = world.level && !world.over;
-    if (enJuego && world.esAdmin) document.getElementById('debug-nivel').value = world.level.id;
+    const debugNivel = document.getElementById('debug-nivel');
+    if (enJuego && world.esAdmin && debugNivel) debugNivel.value = world.level.id;
     // «Noclipearse a la realidad» solo tiene sentido DENTRO de una partida
     const btnNoclip = document.getElementById('btn-noclip-menu');
     if (btnNoclip) btnNoclip.style.display = enJuego ? '' : 'none';
@@ -407,15 +410,18 @@
   }
   function pintarBtnMute() {
     const b = document.getElementById('btn-snd-mute');
+    if (!b) return;
     b.textContent = '';
     if (window.Icons) b.appendChild(Icons.img(Sfx.muted ? 'altavoz_mudo' : 'altavoz', 13));
     b.appendChild(document.createTextNode(Sfx.muted ? ' Activar sonido' : ' Silenciar todo'));
   }
-  document.getElementById('btn-snd-mute').onclick = () => {
-    Sfx.toggleMute();
-    pintarBtnMute();
-  };
-  document.getElementById('btn-snd-close').onclick = cerrarSndMenu;
+  const btnSndMute = document.getElementById('btn-snd-mute');
+  if (btnSndMute) btnSndMute.onclick = () => {
+      Sfx.toggleMute();
+      pintarBtnMute();
+    };
+  const btnSndClose = document.getElementById('btn-snd-close') || document.getElementById('btn-sound-close');
+  if (btnSndClose) btnSndClose.onclick = cerrarSndMenu;
   // Noclipearse a la realidad (v30.14): salir de la partida y volver al menú.
   // La recarga cierra el WebSocket limpio y deja la portada sin estados
   // residuales (HUD, música, reconexiones) — el guardado por perfil persiste.
@@ -423,11 +429,11 @@
   if (btnNoclip) btnNoclip.onclick = () => location.reload();
 
   // ---------- versión + pantalla completa + guardián (v23) ----------
-  document.getElementById('ajustes-version').textContent =
-    `BACKROOMS MMO ${window.VERSION_JUEGO}`;
+  const ajustesVersion = document.getElementById('ajustes-version');
+  if (ajustesVersion) ajustesVersion.textContent = `BACKROOMS MMO ${window.VERSION_JUEGO}`;
 
   const btnFs = document.getElementById('btn-fullscreen');
-  btnFs.onclick = () => {
+  if (btnFs) btnFs.onclick = () => {
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen().catch(() => {});
   };
@@ -511,7 +517,7 @@
   }
   document.addEventListener('fullscreenchange', () => {
     const isFullscreen = !!document.fullscreenElement;
-    btnFs.textContent = isFullscreen
+    if (btnFs) btnFs.textContent = isFullscreen
       ? 'Salir de pantalla completa' : 'Pantalla completa';
     ajustarLienzo();
     // Captura la tecla Escape en pantalla completa: sin esto, al liberar el
@@ -622,16 +628,20 @@
   function actualizarAdminUI() {
     const admin = !!world.esAdmin;
     const enJuego = world.level && !world.over;
-    document.getElementById('admin-row').style.display = admin ? 'none' : 'flex';
-    document.getElementById('debug-container').style.display = admin && enJuego ? 'block' : 'none';
-    document.getElementById('debug-stats').style.display = admin && enJuego ? 'block' : 'none';
+    const adminRow = document.getElementById('admin-row');
+    const debugContainer = document.getElementById('debug-container');
+    const debugStats = document.getElementById('debug-stats');
+    if (adminRow) adminRow.style.display = admin ? 'none' : 'flex';
+    if (debugContainer) debugContainer.style.display = admin && enJuego ? 'block' : 'none';
+    if (debugStats) debugStats.style.display = admin && enJuego ? 'block' : 'none';
     if (admin) world.ui.updateHUD();
   }
   window.onAdminCambia = (si) => {
     const msg = document.getElementById('admin-msg');
     if (si) {
       world.log('Las Backrooms te reconocen como su guardián.', 'good');
-      document.getElementById('admin-clave').value = '';
+      const adminClave = document.getElementById('admin-clave');
+      if (adminClave) adminClave.value = '';
       if (msg) msg.textContent = '';
     } else if (msg) {
       // feedback EN el panel (el registro pequeño pasaba desapercibido)
@@ -643,11 +653,11 @@
     const clave = document.getElementById('admin-clave');
     const btnAdmin = document.getElementById('btn-admin');
     // que teclear la contraseña no mueva al personaje ni dispare atajos
-    clave.addEventListener('keydown', (ev) => {
+    if (clave && btnAdmin) clave.addEventListener('keydown', (ev) => {
       ev.stopPropagation();
       if (ev.key === 'Enter') btnAdmin.click();
     });
-    btnAdmin.onclick = () => {
+    if (clave && btnAdmin) btnAdmin.onclick = () => {
       const v = clave.value.trim();
       if (!v) { clave.focus(); return; }
       if (world.online && window.Net && Net.activo) Net.admin(v);
@@ -669,12 +679,14 @@
       return na - nb || a.wikiTitle.localeCompare(b.wikiTitle);
     });
     for (const lv of niveles) {
+      if (!sel) break;
       const o = document.createElement('option');
       o.value = lv.id;
       o.textContent = `${lv.wikiTitle} · P${lv.peligro} · ${lv.bioma}${lv.esEscape ? ' ⭐' : ''}`;
       sel.appendChild(o);
     }
-    document.getElementById('btn-debug-tp').onclick = () => {
+    const btnDebugTp = document.getElementById('btn-debug-tp');
+    if (sel && btnDebugTp) btnDebugTp.onclick = () => {
       const id = sel.value;
       if (!world.esAdmin || !world.level || world.over || !world.data.levels[id]) return;
       cerrarSndMenu();
@@ -691,7 +703,8 @@
         o.textContent = obj.nombre || id;
         selObj.appendChild(o);
       }
-      document.getElementById('btn-debug-item').onclick = () => {
+      const btnDebugItem = document.getElementById('btn-debug-item');
+      if (btnDebugItem) btnDebugItem.onclick = () => {
         const id = selObj.value;
         if (!world.esAdmin || !world.level || world.over || !world.data.objects[id]) return;
         if (world.online && window.Net && Net.activo) {
@@ -2000,10 +2013,13 @@
     if (n && confirm(`¿Borrar el perfil «${n}» y todo su códice?`)) { P.remove(n); refreshTitle(); }
   };
   $id('btn-codex').onclick = () => world.ui.toggleCodex(true);
-  $id('btn-changelog').onclick = () => {
-    if (window.Changelog) Changelog.marcarVisto();
-    world.ui.toggleChangelog(true);
-  };
+  const btnChangelog = $id('btn-changelog');
+  if (btnChangelog) {
+    btnChangelog.onclick = () => {
+      if (window.Changelog) Changelog.marcarVisto();
+      world.ui.toggleChangelog(true);
+    };
+  }
 
   // ---------- Selector de Música de Menú ----------
   const btnMusicMenu = $id('btn-music-menu');
@@ -2079,7 +2095,8 @@
     world.ui.show('title');
   };
   $id('btn-journal-close').onclick = () => world.ui.toggleJournal();
-  $id('btn-end-codex').onclick = () => world.ui.toggleCodex(true);
+  const btnEndCodex = $id('btn-end-codex');
+  if (btnEndCodex) btnEndCodex.onclick = () => world.ui.toggleCodex(true);
   $id('btn-end-title').onclick = () => { world.ui.show('title'); refreshTitle(); };
 
   // ---------- controles táctiles ----------

@@ -7,6 +7,8 @@ const root = path.resolve(__dirname, '..');
 const css = fs.readFileSync(path.join(root, 'css/r1-adaptations.css'), 'utf8');
 const adapter = fs.readFileSync(path.join(root, 'js/r1-adapter.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const main = fs.readFileSync(path.join(root, 'js/main.js'), 'utf8');
+const ui = fs.readFileSync(path.join(root, 'js/ui/ui.js'), 'utf8');
 
 function r1AssetVersion(asset) {
   const escapedAsset = asset.replace(/\./g, '\\.');
@@ -46,4 +48,34 @@ test('el fundido queda limitado al lienzo r1 y no al navegador de escritorio', (
 test('los recursos r1 corregidos invalidan la caché del entorno de pruebas', () => {
   assert.ok(r1AssetVersion('css/r1-adaptations.css') >= 2);
   assert.ok(r1AssetVersion('js/r1-adapter.js') >= 2);
+});
+
+test('las pantallas controladas por display inline pueden permanecer ocultas', () => {
+  assert.doesNotMatch(rule('#screen-title, #screen-title.title-interface-enabled'), /display:\s*flex\s*!important/);
+  assert.doesNotMatch(rule('#screen-card'), /display:\s*flex\s*!important/);
+  assert.doesNotMatch(rule('#backpack-panel'), /display:\s*flex\s*!important/);
+  assert.doesNotMatch(
+    rule('#item-modal, #exit-modal, #choice-modal, #journal-panel, #sound-menu, #screen-end, #log-panel'),
+    /display:\s*flex\s*!important/
+  );
+});
+
+test('el asistente LLM obedece su estado hidden', () => {
+  assert.match(css, /#r1-llm-panel\.hidden\s*\{[\s\S]*?display:\s*none\s*!important/);
+});
+
+test('main no aborta al enlazar controles opcionales ausentes del port', () => {
+  const htmlIds = new Set([...html.matchAll(/\bid=["']([^"']+)/g)].map(match => match[1]));
+  const directHandlers = [
+    ...main.matchAll(/\$id\(['"]([^'"]+)['"]\)\.(?:onclick|onchange|oninput)\s*=/g),
+    ...main.matchAll(/document\.getElementById\(['"]([^'"]+)['"]\)\s*\./g),
+  ].map(match => match[1]);
+  const missing = directHandlers.filter(id => !htmlIds.has(id));
+  assert.deepEqual(missing, [], `Controles ausentes enlazados sin guardia: ${missing.join(', ')}`);
+  assert.match(main, /const optDado = document\.getElementById\('opt-dado'\);\s*if \(optDado\) \{/);
+});
+
+test('UI puede inicializar aunque el port omita paneles secundarios', () => {
+  assert.match(ui, /const codexPanel = \$\('codex-panel'\);\s*if \(codexPanel\)/);
+  assert.match(ui, /const changelogPanel = \$\('changelog-panel'\);\s*if \(changelogPanel\)/);
 });

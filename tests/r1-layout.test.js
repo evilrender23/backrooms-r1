@@ -90,6 +90,7 @@ test('la URL de instalación permanece estable y las actualizaciones son automá
   assert.match(html, /cache:\s*['"]no-store['"]/);
   assert.match(html, /sessionStorage/);
   assert.match(html, /history\.replaceState/);
+  assert.match(html, /setInterval\(checkForUpdate,\s*60000\)/);
 });
 
 test('el actualizador no borra partidas ni preferencias persistentes', () => {

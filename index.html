@@ -9,7 +9,7 @@
 <script>
 (() => {
   'use strict';
-  const CURRENT_BUILD = '20260723-194616';
+  const CURRENT_BUILD = '20260723-195108';
   const UPDATE_PARAM = '__r1v';
   const ATTEMPT_KEY = 'backrooms-r1-update-attempt';
   const cleanUrl = new URL(location.href);
@@ -21,7 +21,7 @@
     try { sessionStorage.removeItem(ATTEMPT_KEY); } catch (_) {}
   }
 
-  fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+  const checkForUpdate = () => fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
     .then(response => response.ok ? response.json() : null)
     .then(remote => {
       if (!remote || !remote.build || remote.build === CURRENT_BUILD) return;
@@ -34,6 +34,9 @@
       location.replace(updateUrl.href);
     })
     .catch(() => {});
+
+  checkForUpdate();
+  setInterval(checkForUpdate, 60000);
 })();
 </script>
 <title>Backrooms R1</title>

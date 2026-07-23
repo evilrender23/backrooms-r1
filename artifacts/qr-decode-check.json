@@ -1,0 +1,6 @@
+{
+  "verified": true,
+  "input_payload": "{\"title\":\"Backrooms R1\",\"url\":\"https://example.com/backrooms-r1/\",\"description\":\"Juego de laberintos 3D Backrooms adaptado a Rabbit R1\",\"iconUrl\":\"https://example.com/backrooms-r1/icon.svg\",\"themeColor\":\"#f5d742\"}",
+  "decoded_payload": "{\"title\":\"Backrooms R1\",\"url\":\"https://example.com/backrooms-r1/\",\"description\":\"Juego de laberintos 3D Backrooms adaptado a Rabbit R1\",\"iconUrl\":\"https://example.com/backrooms-r1/icon.svg\",\"themeColor\":\"#f5d742\"}",
+  "match_exact": true
+}

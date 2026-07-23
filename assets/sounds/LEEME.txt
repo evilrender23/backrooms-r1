@@ -1,0 +1,41 @@
+SONIDOS PERSONALIZADOS
+======================
+
+Todos los sonidos del juego tienen fallback sintetizado por codigo. Para sustituir
+cualquiera, coloca un archivo con su nombre exacto.
+
+Formatos aceptados:
+  .mp3, .ogg, .wav
+
+Efectos generales en assets/sounds/:
+  paso       - pisada al moverte
+  golpe      - golpe/ataque/impacto
+  dano       - recibes dano
+  recoger    - recoges un objeto
+  dado       - tirada de dado
+  puerta     - cruzas una salida
+  registrar  - registras una taquilla/contenedor
+  muerte     - fin de partida
+  victoria   - escape/victoria
+  latido     - cordura baja
+  ui         - interfaz
+  derrumbe   - colapso/romper suelo
+  bisturi    - evento de bisturi
+  crujido    - no-clip/reorganizacion suave
+
+Entidades en assets/sounds/entidades/:
+  smiler.wav - loop del Smiler. Suena mas fuerte cuanto mas cerca esta el
+               Smiler del jugador.
+               Debe estar preparado como loop: el juego lo mantiene reproduciendo
+               y ajusta su volumen por proximidad.
+
+Compatibilidad:
+  El juego tambien intenta buscar assets/sounds/entities/smiler.wav y
+  assets/sounds/smiler.wav, pero la ruta recomendada en espanol es:
+  assets/sounds/entidades/smiler.wav
+
+Ambientes por nivel en assets/sounds/niveles/:
+  niveles/<id-de-nivel>.mp3|wav|ogg
+  Ejemplo: niveles/level-0.mp3
+
+Si no existe archivo para un sonido, el juego usa su sintesis integrada.

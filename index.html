@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=240, height=282, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Backrooms R1</title>
+<link rel="stylesheet" href="css/style.css?v=296">
+<link rel="stylesheet" href="css/title-interface.css?v=296">
+<link rel="stylesheet" href="css/r1-adaptations.css?v=1">
+</head>
+<body>
+
+<!-- Splash de presentación adaptado -->
+<div id="splash" class="splash">
+  <div class="splash-bar splash-bar-top"></div>
+  <div class="splash-bar splash-bar-bottom"></div>
+  <div class="splash-vignette"></div>
+  <div class="splash-inner">
+    <img class="splash-logo" src="assets/ui/logo-maxo.png" alt="AgenteMaxo" width="80" height="80">
+    <p class="splash-text">Backrooms R1</p>
+    <p class="splash-presenta">Edición rabbit r1</p>
+  </div>
+</div>
+
+<div id="app">
+  <!-- Pantalla de título -->
+  <div id="screen-title" class="screen">
+    <div class="title-box">
+      <h1 class="glitch">BACKROOMS</h1>
+      <p class="subtitle">Supervivencia Noclip · rabbit r1</p>
+      <p class="intro-text">Has atravesado la realidad donde no debías. Despiertas en moqueta húmeda bajo un zumbido amarillo.</p>
+      <div id="backrooms-census" class="backrooms-census" role="status" aria-live="polite">
+        <span class="census-signal" aria-hidden="true"></span>
+        <span id="backrooms-census-text">Escuchando tras las paredes…</span>
+      </div>
+
+      <div id="profile-box">
+        <p class="profile-title">— EXPEDIENTE DE ERRANTE —</p>
+        <div class="profile-row">
+          <select id="profile-select"></select>
+          <input id="profile-name" type="text" spellcheck="false" placeholder="nuevo errante…" maxlength="24">
+          <button id="btn-profile-create" class="btn-small">Crear</button>
+        </div>
+        <p id="profile-records"></p>
+        <div class="profile-row">
+          <button id="btn-codex" class="btn-small"><span data-icon="libro" data-icon-size="11"></span> Códice</button>
+          <button id="btn-profile-del" class="btn-small">Borrar</button>
+        </div>
+      </div>
+
+      <div class="seed-row" style="display:none">
+        <input id="seed-input" type="hidden">
+        <input type="range" id="vol-slider-title" min="0" max="100" step="1" value="80">
+        <button id="btn-sound-menu-title" class="btn-small"><span data-icon="engranaje" data-icon-size="11"></span> Ajustes</button>
+        <button id="btn-gamepad-title" class="btn-small">Mando</button>
+      </div>
+
+      <div class="room-row" style="display:none">
+        <input id="room-input" type="password" placeholder="vacío = pública">
+      </div>
+
+      <button id="btn-offline" class="btn-mode btn-mode-solo" title="Partida en solitario en rabbit r1">
+        <span class="btn-mode-title">ENTRAR A LAS BACKROOMS</span>
+        <span class="btn-mode-sub">Rueda / Táctil · Un jugador</span>
+      </button>
+
+      <button id="btn-start" class="btn-mode btn-mode-online" style="display:none">
+        <span class="btn-mode-title">MULTIJUGADOR</span>
+      </button>
+
+      <p id="title-net" class="warn" style="display:none"></p>
+      <button id="btn-continue" class="btn-small" style="display:none">Continuar partida guardada</button>
+    </div>
+    <button id="btn-music-menu" class="btn-music-float" title="Música" style="display:none"></button>
+  </div>
+
+  <!-- Caída hacia las Backrooms -->
+  <div id="fall-screen" class="fall-screen" hidden>
+    <div class="fall-void"></div>
+    <div class="fall-lines" id="fall-lines"></div>
+  </div>
+
+  <!-- Tarjeta de entrada a nivel -->
+  <div id="screen-card" class="screen" style="display:none">
+    <div class="level-card">
+      <div class="card-danger" id="card-danger"></div>
+      <h2 id="card-name"></h2>
+      <p class="card-class" id="card-class"></p>
+      <p class="card-desc" id="card-desc"></p>
+      <blockquote class="card-quote" id="card-quote"></blockquote>
+      <div class="card-rules" id="card-rules"></div>
+      <div class="card-foot">
+        <a id="card-wiki" href="#" target="_blank" rel="noopener" style="display:none">Wiki</a>
+        <button id="btn-enter" class="btn-big">EXPLORAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla Principal de Juego -->
+  <div id="screen-game" style="display:none">
+    <div id="game-wrap">
+      <canvas id="gl-canvas" width="240" height="282" style="display:none"></canvas>
+      <canvas id="game-canvas" width="240" height="282"></canvas>
+      
+      <button id="btn-esc" title="Ajustes (ESC)" style="display:none"></button>
+      <button id="btn-log" title="Registro (L)" style="display:none"></button>
+      
+      <div id="log-panel" style="display:none">
+        <h3>Registro</h3>
+        <div id="log-full"></div>
+        <button id="btn-log-close" class="btn-small">Cerrar</button>
+      </div>
+
+      <div id="moodles"></div>
+
+      <div id="espectador-bar" style="display:none">
+        <span class="esp-ojo">👁</span> ESPECTADOR — <b id="esp-nombre"></b>
+        <button id="esp-prev">◀</button>
+        <button id="esp-next">▶</button>
+        <button id="esp-salir">✕ salir</button>
+      </div>
+
+      <div id="debug-stats" style="display:none"></div>
+
+      <div id="hud-equipo">
+        <div class="eq-hud-slot" id="hud-eq-cara"><span class="eq-ph">cara</span></div>
+        <div class="eq-hud-slot" id="hud-eq-cuerpo"><span class="eq-ph">cuerpo</span></div>
+        <div class="eq-hud-slot" id="hud-eq-pies"><span class="eq-ph">pies</span></div>
+      </div>
+
+      <div id="hud-manos">
+        <div class="mano-slot" id="mano-0" title="Mano Izq"></div>
+        <div class="mano-slot" id="mano-1" title="Mano Der"></div>
+        <button id="btn-mochila" title="Mochila"></button>
+      </div>
+
+      <div id="backpack-panel" style="display:none">
+        <div class="modal-box" id="backpack-box">
+          <h3>Mochila del errante</h3>
+          <div id="backpack-layout">
+            <div class="bp-mano-col">
+              <div class="mano-slot bp-mano" id="bp-mano-0"></div>
+              <span class="bp-label">izq</span>
+            </div>
+            <div id="backpack-slots"></div>
+            <div class="bp-mano-col">
+              <div class="mano-slot bp-mano" id="bp-mano-1"></div>
+              <span class="bp-label">der</span>
+            </div>
+          </div>
+          <div id="bp-equipo">
+            <div class="eq-slot" id="eq-cara" data-tipo="cara"><span class="eq-ph">c</span></div>
+            <div class="eq-slot" id="eq-cuerpo" data-tipo="cuerpo"><span class="eq-ph">b</span></div>
+            <div class="eq-slot" id="eq-pies" data-tipo="pies"><span class="eq-ph">p</span></div>
+            <div id="bp-efectos"></div>
+          </div>
+          <button id="btn-backpack-close" class="btn-small">Cerrar</button>
+        </div>
+      </div>
+
+      <div id="game-log"></div>
+      <div id="dice-overlay" style="display:none"><div id="dice-box"><div id="dice-face">?</div><p id="dice-text"></p></div></div>
+      
+      <div id="exit-modal" style="display:none">
+        <div class="modal-box">
+          <h3>Salida encontrada</h3>
+          <p id="exit-text"></p>
+          <p id="exit-warn" class="warn"></p>
+          <div class="modal-btns">
+            <button id="btn-cross" class="btn-big">CRUZAR</button>
+            <button id="btn-stay" class="btn-small">Quedarse</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="journal-panel" style="display:none">
+        <h3>Diario de ruta</h3>
+        <ol id="journal-list"></ol>
+        <button id="btn-journal-close" class="btn-small">Cerrar</button>
+      </div>
+
+      <div id="choice-modal" style="display:none">
+        <div class="modal-box">
+          <h3 id="choice-title"></h3>
+          <p id="choice-text"></p>
+          <div class="modal-btns" id="choice-btns"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capa de Controles Táctiles Overlay para r1 -->
+  <div id="r1-touch-layer">
+    <!-- D-Pad Direccional -->
+    <div class="r1-dpad">
+      <button id="r1-dpad-up" class="r1-dpad-up">▲</button>
+      <button id="r1-dpad-left" class="r1-dpad-left">◀</button>
+      <div class="r1-dpad-center">R1</div>
+      <button id="r1-dpad-right" class="r1-dpad-right">▶</button>
+      <button id="r1-dpad-down" class="r1-dpad-down">▼</button>
+    </div>
+
+    <!-- Botones de Acción r1 -->
+    <div class="r1-actions">
+      <button id="r1-btn-act" class="r1-btn-action r1-btn-act">ESP</button>
+      <button id="r1-btn-luz" class="r1-btn-action r1-btn-luz">LUZ</button>
+      <button id="r1-btn-moc" class="r1-btn-action">MOC</button>
+      <button id="r1-btn-map" class="r1-btn-action">MAP</button>
+      <button id="r1-btn-llm" class="r1-btn-action r1-btn-llm">IA</button>
+    </div>
+  </div>
+
+  <!-- Panel de Asistente de Supervivencia LLM r1 -->
+  <div id="r1-llm-panel" class="hidden">
+    <div class="r1-llm-header">
+      <h4>🤖 Asistente R1 LLM</h4>
+      <button id="r1-llm-close" class="btn-small">✕</button>
+    </div>
+    <div class="r1-llm-body">
+      <p id="r1-llm-text">Cargando consejos de supervivencia para el Nivel...</p>
+    </div>
+  </div>
+
+  <!-- Modal Ficha Objeto -->
+  <div id="item-modal" style="display:none">
+    <div class="modal-box">
+      <h3><span id="item-icon"></span> <span id="item-name"></span></h3>
+      <p id="item-desc"></p>
+      <p id="item-effect" class="item-effect"></p>
+      <div class="modal-btns">
+        <button id="btn-item-use" class="btn-big">USAR</button>
+        <button id="btn-item-equip" class="btn-big">EMPUÑAR</button>
+        <button id="btn-item-throw" class="btn-small">Arrojar</button>
+        <button id="btn-item-drop" class="btn-small">Tirar</button>
+        <button id="btn-item-close" class="btn-small">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ajustes de Sonido -->
+  <div id="sound-menu" style="display:none">
+    <div class="modal-box">
+      <h3>Ajustes</h3>
+      <div class="sound-row"><label>General</label><input type="range" id="snd-general" min="0" max="100"><span id="snd-general-v"></span></div>
+      <div class="sound-row"><label>Efectos</label><input type="range" id="snd-fx" min="0" max="100"><span id="snd-fx-v"></span></div>
+      <div class="sound-row"><label>Ambiente</label><input type="range" id="snd-amb" min="0" max="100"><span id="snd-amb-v"></span></div>
+      <button id="btn-sound-close" class="btn-small">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Muerte / Victoria -->
+  <div id="screen-end" class="screen" style="display:none">
+    <div class="end-box">
+      <h1 id="end-title"></h1>
+      <p id="end-cause"></p>
+      <div id="end-stats"></div>
+      <h3>Recorrido</h3>
+      <ol id="journal-list"></ol>
+      <button id="btn-again" class="btn-big">DESPERTAR EN LEVEL 0</button>
+      <button id="btn-end-title" class="btn-small">Título</button>
+    </div>
+  </div>
+
+  <div id="fade"></div>
+</div>
+
+<!-- SDK de rabbit r1 Bridge y Mock -->
+<script src="r1-bridge.js"></script>
+<script src="r1-mock.js"></script>
+
+<!-- Scripts del juego Backrooms Noclip -->
+<script src="js/data.js?v=296"></script>
+<script src="js/engine/rng.js?v=296"></script>
+<script src="js/mapgen/mapgen.js?v=296"></script>
+<script src="js/engine/tiles.js?v=296"></script>
+<script src="js/engine/sprites.js?v=296"></script>
+<script src="js/engine/effects.js?v=296"></script>
+<script src="js/audio-manifest.js?v=296"></script>
+<script src="js/assets-manifest.js?v=296"></script>
+<script src="js/engine/sfx.js?v=296"></script>
+<script src="js/engine/fov.js?v=296"></script>
+<script src="js/systems/entities.js?v=296"></script>
+<script src="js/systems/rules.js?v=296"></script>
+<script src="js/engine/render.js?v=296"></script>
+<script src="js/lib/three.min.js?v=296"></script>
+<script src="js/lib/shaders/CopyShader.js?v=296"></script>
+<script src="js/lib/shaders/LuminosityHighPassShader.js?v=296"></script>
+<script src="js/lib/shaders/GammaCorrectionShader.js?v=296"></script>
+<script src="js/lib/postprocessing/EffectComposer.js?v=296"></script>
+<script src="js/lib/postprocessing/RenderPass.js?v=296"></script>
+<script src="js/lib/postprocessing/ShaderPass.js?v=296"></script>
+<script src="js/lib/postprocessing/UnrealBloomPass.js?v=296"></script>
+<script src="js/engine/atmos3d.js?v=296"></script>
+<script src="js/engine/render3d.js?v=296"></script>
+<script src="js/systems/game.js?v=296"></script>
+<script src="js/ui/icons.js?v=296"></script>
+<script src="js/ui/controllers.js?v=296"></script>
+<script src="js/ui/ui.js?v=296"></script>
+<script src="js/ui/title-interface.js?v=296"></script>
+<script src="js/ui/changelog.js?v=296"></script>
+<script src="js/ui/minimap.js?v=296"></script>
+<script src="js/sim/fisica.js?v=296"></script>
+<script src="js/sim/entidades.js?v=296"></script>
+<script src="js/sim/sala.js?v=296"></script>
+<script src="js/net/local.js?v=296"></script>
+<script src="js/net/otros.js?v=296"></script>
+<script src="js/net/cliente.js?v=296"></script>
+<script src="js/main.js?v=296"></script>
+
+<!-- Adaptador de Entorno r1 -->
+<script src="js/r1-adapter.js?v=1"></script>
+</body>
+</html>
